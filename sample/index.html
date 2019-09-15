@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Example</title>
+</head>
+
+<body>
+  <script>
+    function getBaseDomainUrl() {
+
+      if (typeof window === "undefined") {
+        console.error("ReferenceError: window is not defined. Are you in frontend javascript layer?");
+        return;
+      }
+
+      if (typeof window.location === "undefined") {
+        console.error("ReferenceError: window.location is not defined. Are you in frontend javascript layer?");
+        return;
+      }
+
+      if (window.location.port) {
+        return window.location.protocol + "//" + window.location.hostname + ":" + window.location.port
+      } else {
+        return window.location.protocol + "//" + window.location.hostname
+      }
+    }
+
+    var configurationsEndpoint = getBaseDomainUrl() + "/settings.json";
+    var req = new XMLHttpRequest();
+    req.open("GET", configurationsEndpoint, true);
+    req.send();
+    req.onload = function() {
+      var json = JSON.parse(req.responseText);
+      document.getElementById("json").textContent=JSON.stringify(json,null,'\t');
+    };
+  </script>
+  <p>This is an example of a simple HTML page loading configurations using ajax:</p>
+  <pre id="json"></pre>
+</body>
+
+</html>
