@@ -1,32 +1,31 @@
 const fs = require('fs');
-const pathUtil = require('path');
+const path = require('path');
 
-var NodejsInjectableModule = function() {
-};
+var NodejsInjectableModule = function() {};
 
 global.NodejsInjectableModule = NodejsInjectableModule;
 
-global.inheritsFrom = function (child, parent) {
-    child.prototype = Object.create(parent.prototype);
+global.inheritsFrom = function(child, parent) {
+  child.prototype = Object.create(parent.prototype);
 };
 
 function JavascriptModulesDiscover() {
 
 }
 
-JavascriptModulesDiscover.scan = function(path, excludes) {
+JavascriptModulesDiscover.scan = function(rootServerDirectory, excludes) {
   logger.info("Automatic scanning of nodejs functions...");
+  logger.debug(excludes);
 
   var files = []
-  getJsFiles(path, files)
+  getJsFiles(rootServerDirectory, files, excludes);
 
   logger.debug(files);
 
   for (var key in files) {
     var file = files[key];
-    var fileName = pathUtil.basename(file);
-
-    var ext = pathUtil.extname(file);
+    var ext = path.extname(file);
+    var fileName = path.basename(file);
     if (file.includes("JavascriptModulesDiscover.js") || file.includes("NodejsInjectableModule.js")) {
       continue;
     }
@@ -34,9 +33,9 @@ JavascriptModulesDiscover.scan = function(path, excludes) {
       continue;
     }
 
-
     var functionRequire = require(file);
-    logger.debug("Detected file:"+file)
+    logger.debug("Detected file:" + file)
+
     var functionInstance = new functionRequire();
     if (functionInstance.constructor.name !== "NodejsInjectableModule") {
       continue;
@@ -44,35 +43,35 @@ JavascriptModulesDiscover.scan = function(path, excludes) {
 
     logger.info("New injectable module detected:" + file);
     logger.info("Instantiation is starting...");
-    logger.debug("functionInstance.constructor.name:"+functionInstance.constructor.name);
+    logger.debug("functionInstance.constructor.name:" + functionInstance.constructor.name);
 
 
-    var functionName = pathUtil.basename(file).replace(ext, "");
+    var functionName = path.basename(file).replace(ext, "");
     var functionInstanceName = functionName.charAt(0).toLowerCase() + functionName.slice(1);
     var functionInstanceName = functionName.charAt(0).toLowerCase() + functionName.slice(1);
     global[functionInstanceName] = functionInstance;
-    logger.info("Function [" + functionInstanceName + "] was registered in global bootstrap context.");
+    logger.info("Function [" + functionInstanceName + "] was registered in global context.");
   }
 };
 
 //original: https://stackoverflow.com/a/36730872/3957754
-var getJsFiles = function(path, files, excludes) {
-  fs.readdirSync(path).forEach(function(file) {
-    var subpath = path + '/' + file;
+var getJsFiles = function(folderBasePath, files, excludes) {
+  fs.readdirSync(folderBasePath).forEach(function(file) {
+    var subpath = folderBasePath + '/' + file;
     if (fs.lstatSync(subpath).isDirectory()) {
-      if (subpath.includes("node_modules") || subpath.includes(".git")|| subpath.includes("build")) {
+
+      if (file.includes("node_modules") || file.includes(".git") || excludes.includes(file) ) {
         return;
       }
-      getJsFiles(subpath, files);
+      getJsFiles(subpath, files, excludes);
     } else {
-      var ext = pathUtil.extname(file);
+      var ext = path.extname(file);
       if (ext !== ".js") {
         return;
       }
-      files.push(path + '/' + file);
+      files.push(folderBasePath + '/' + file);
     }
   });
 }
-
 
 module.exports = JavascriptModulesDiscover;

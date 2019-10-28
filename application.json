@@ -5,20 +5,13 @@
     }
   },
   "frontend": {
-    "token": "${token}",
     "employeeApi": {
       "baseUrl": "https://employee-api.acme.com"
-    },
-    "cdn": {
-      "baseUrl": "https://cdn.acme.com"
-    },
-    "welcomeMessage": "Welcome to acme web",
-    "backgroundColor": "#4884157",
-    "etc":"etc"
+    }
   },
   "endpoints": {
     "settings": {
-      "httpResponseHeaderNamePrefix": "ACME-ORG"
+      "httpResponseHeaderNamePrefix": "UTEC"
     }
   }
 }
