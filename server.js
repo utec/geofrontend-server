@@ -26,9 +26,9 @@ app.use(session({
 
 const JavascriptModulesDiscover = require('./common/advanced/injection/JavascriptModulesDiscover.js');
 
-var port = process.env.PORT || 8080;
+var port = process.env.PORT || 2708;
 
-JavascriptModulesDiscover.scan(geoFrontServerHomePath, ["server.js"]);
+JavascriptModulesDiscover.scan(geoFrontServerHomePath, ["server.js", "build"]);
 
 propertiesReader.registerFromJsonFile(geoFrontServerConfigurationsFilePath, "utf8");
 

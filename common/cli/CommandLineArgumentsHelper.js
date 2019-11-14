@@ -23,8 +23,8 @@ CommandLineArgumentsHelper.configureGlobalParameters = function(launchedArgument
   	console.log("Geofront Server is launching as server");
     global.geoFrontServerHomePath = process.cwd();
     global.geoFrontServerConfigurationsFilePath = process.cwd() + path.sep + "application.json";
-    global.geoFrontServerBundlePath = './build';
-    global.geoFrontServerCommonPagesPath = './pages/common';
+    global.geoFrontServerBundlePath = process.cwd() + path.sep + 'build';
+    global.geoFrontServerCommonPagesPath = process.cwd() + path.sep + 'pages/common';
   }
 
 };
