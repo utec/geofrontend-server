@@ -1,0 +1,27 @@
+{
+  "name": "basic-security-client",
+  "version": "1.0.0",
+  "description": "basic-security-client",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/utec/horus-web-client.git"
+  },
+  "dependencies": {
+    "axios": "0.19.0",
+    "jsonpath": "1.0.2"
+  },
+  "keywords": [
+    "basic-security-client"
+  ],
+  "author": "Richard Leon Ingaruca <jrichardsz.java@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "#"
+  },
+  "homepage": "#",
+  "devDependencies": {}
+}
