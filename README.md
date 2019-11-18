@@ -52,8 +52,8 @@ A complete guideline is available in the [wiki](https://github.com/utec/geofront
 
 # TODO
 
-- Use an advanced session store instead express default memory.
-- Search an easy way for development stage: Frameworks in development mode, uses internal light server like express and **geofrontend server** works only for your builded assets.
+- [ ] Use an advanced session store instead express default memory.
+- [ ] Search an easy way for development stage: Frameworks in development mode, uses internal light server like express and **geofrontend server** works only for your builded assets.
 
 # Contributors
 
@@ -64,7 +64,7 @@ A complete guideline is available in the [wiki](https://github.com/utec/geofront
       <br />
       <label><a href="http://jrichardsz.github.io/">Richard Leon</a></label>
       <br />
-    </td>    
+    </td>
   </tbody>
 </table>
 

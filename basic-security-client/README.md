@@ -1,1 +1,1 @@
-# Horus Web Client
+# Basic Security Client

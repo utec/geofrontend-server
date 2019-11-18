@@ -38,10 +38,10 @@ function StaticServerConfigurator() {
     // here call to internal systems or whatever to get data
     app.get('/settings.json', hasProtectedAccess, function(req, res) {
 
-      if (req.session.userLogguedIn) {
+      if (req.session.userLoggedIn) {
         var settings = {};
         Object.assign(settings, properties.frontend);
-        settings.session = req.session.userLogguedIn;
+        settings.session = req.session.userLoggedIn;
         settingsEndpoint.createJsonResponse(settings, req, res);
       } else {
         settingsEndpoint.createJsonResponse(properties.frontend, req, res);
@@ -61,7 +61,7 @@ function StaticServerConfigurator() {
     if(commmonPagesPath.startsWith(".")){
       res.sendFile(commmonPagesPath + '/internalError.html',{ root: geoFrontServerHomePath })
     }else{
-      res.sendFile(commmonPagesPath + '/internalError.html')
+      res.sendFile(commmonPagesPath + commonPage)
     }
   }
 

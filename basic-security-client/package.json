@@ -8,17 +8,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/utec/horus-web-client.git"
+    "url": "git+https://github.com/utec"
   },
   "dependencies": {
-    "axios": "0.19.0",
-    "jsonpath": "1.0.2"
   },
   "keywords": [
     "basic-security-client"
   ],
-  "author": "Richard Leon Ingaruca <jrichardsz.java@gmail.com>",
-  "license": "MIT",
+  "author": "Nick Palomino <npalomino@utec.edu.pe>",
+  "license": "ISV",
   "bugs": {
     "url": "#"
   },
