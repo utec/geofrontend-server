@@ -1,12 +1,12 @@
 {
-  "name": "geofront-server",
+  "name": "geofrontend-server",
   "version": "1.0.0",
-  "description": "Geofront Server",
+  "description": "Geofrontend Server",
   "repository": "...",
   "license": "MIT",
   "main": "index.js",
   "bin": {
-    "geofront-server": "server.js"
+    "geofrontend-server": "server.js"
   },
   "scripts": {
     "start": "node server.js",
