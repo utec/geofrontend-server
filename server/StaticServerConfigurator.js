@@ -38,10 +38,10 @@ function StaticServerConfigurator() {
     // here call to internal systems or whatever to get data
     app.get('/settings.json', hasProtectedAccess, function(req, res) {
 
-      if (req.session.userLoggedIn) {
+      if (req.session.userLogguedIn) {
         var settings = {};
         Object.assign(settings, properties.frontend);
-        settings.session = req.session.userLoggedIn;
+        settings.session = req.session.userLogguedIn;
         settingsEndpoint.createJsonResponse(settings, req, res);
       } else {
         settingsEndpoint.createJsonResponse(properties.frontend, req, res);

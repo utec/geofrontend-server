@@ -6,8 +6,8 @@
         "name": "basic-security-client"
       },
       "configModule": {
-        "user": "admin",
-        "password": "1234567"
+        "user": "${AUTH_USER}",
+        "password": "${AUTH_PASSWORD}"
       }
     }
   },

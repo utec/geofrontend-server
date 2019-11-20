@@ -12,7 +12,7 @@ function BasicSecurityStrategy(expressServer, options) {
       throw new Error("Session is not properly configured");
     }
 
-    if (req.session.userLoggedIn) {
+    if (req.session.userLogguedIn) {
       //User is already logged in
       logger.info("User is logged in");
       return next();
@@ -33,7 +33,7 @@ function BasicSecurityStrategy(expressServer, options) {
           }
 
           console.log("Redirect url: " + authorizeUrl);
-          req.session.userLoggedIn = userParams;
+          req.session.userLogguedIn = userParams;
           req.session.save();
           res.redirect(authorizeUrl);
           return;
@@ -56,7 +56,6 @@ function getUserFromBasicAuth(req) {
     var [type, token] = authHeader.split(' ');
     console.log("Authorization Type: "+ type);
     console.log("Authorization Token: "+ token);
-    //var [user, password] = atob(token).split(':');
     var [user, password] = Buffer.from(token, 'base64').toString().split(':');
     return {
       user: user,
