@@ -1,7 +1,14 @@
 {
   "server": {
     "security": {
-      "enable": false
+      "enable": false,
+      "npmModule": {
+        "name": "basic-security-client"
+      },
+      "configModule": {
+        "user": "${AUTH_USER}",
+        "password": "${AUTH_PASSWORD}"
+      }
     }
   },
   "frontend": {

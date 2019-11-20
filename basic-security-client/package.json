@@ -1,0 +1,25 @@
+{
+  "name": "basic-security-client",
+  "version": "1.0.0",
+  "description": "basic-security-client",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/utec"
+  },
+  "dependencies": {
+  },
+  "keywords": [
+    "basic-security-client"
+  ],
+  "author": "Nick Palomino <npalomino@utec.edu.pe>",
+  "license": "ISV",
+  "bugs": {
+    "url": "#"
+  },
+  "homepage": "#",
+  "devDependencies": {}
+}

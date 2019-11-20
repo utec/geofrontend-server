@@ -1,12 +1,12 @@
 {
-  "name": "geofront-server",
-  "version": "1.0.0",
-  "description": "Geofront Server",
+  "name": "geofrontend-server",
+  "version": "1.0.1",
+  "description": "Geofrontend Server",
   "repository": "...",
   "license": "MIT",
   "main": "index.js",
   "bin": {
-    "geofront-server": "server.js"
+    "geofrontend-server": "server.js"
   },
   "scripts": {
     "start": "node server.js",
@@ -16,6 +16,7 @@
     "node": "8.9.4"
   },
   "dependencies": {
+    "basic-security-client": "file:basic-security-client",
     "cookie-parser": "1.4.4",
     "cors": "2.8.5",
     "express": "4.17.1",

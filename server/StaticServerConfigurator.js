@@ -61,7 +61,7 @@ function StaticServerConfigurator() {
     if(commmonPagesPath.startsWith(".")){
       res.sendFile(commmonPagesPath + '/internalError.html',{ root: geoFrontServerHomePath })
     }else{
-      res.sendFile(commmonPagesPath + '/internalError.html')
+      res.sendFile(commmonPagesPath + commonPage)
     }
   }
 
