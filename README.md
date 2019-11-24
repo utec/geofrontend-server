@@ -9,17 +9,18 @@ Minimal nodejs express server to publish html static SPA webpage which is the re
 - Static server for your builded assests from any framework like vue, angular, react. etc
 - Forget about security when your are developing in any javascript framework, because the **geofrontend server** will manage it.
 - By default, **basic authentication** is ready to use.
-- How to keep one javascript build across several environments? Let me think.. Yeah **geofrontend server** will pubish and **/settings.json** http endpoint with custom configurtion for your web.
+- How to keep one javascript build across several environments? Let me think.. Yeah **geofrontend server** will publish and **/settings.json** http endpoint with custom configuration for your web.
 
 # Modes
 
 In order to publish your static assets, you could choose one of these modes:
 
-- GeoFrontend server as npm module
-- GeoFrontend server as standalone
+**GeoFrontend server as npm module**
+
+**GeoFrontend server as standalone**
 
 
-# Geofront server as npm module
+# Geofrontend server as npm module
 
 Just add the dependency:
 
@@ -53,7 +54,7 @@ Go to your browser an enter to http://localhost:8080 and a popup will prompt you
 
 > It is assumed that your application has an command called **build** and the result of that is stored in **public** folder. Just change it according to your real scenario
 
-# Geofront server as standalone
+# Geofrontend server as standalone
 
 - Clone this repository
 - Execute **npm run build** or any command required to **build** your application.
@@ -77,9 +78,73 @@ And just run with: **npm run start**
 
 Go to your browser an enter to http://localhost:8080 and a popup will prompt you asking the credentials.
 
+# application.json
+
+Is the only properties or configurations file. You can use hardcoded values or environment variables.
+
+I recommended you to use **environment variables** to make the application agnostic to the server where will be deployed. You just need export values before server startup.
+
+# /setting.json
+
+Forgot the **.env** file, manually variables configuration and a build for a new environment.
+
+Geofrontend server will expose an endpoint /settings.json with values ready to use as your properties or configurations file.
+
+```json
+{
+  "status": 200,
+  "message": "success",
+  "content": {
+    "session": {
+      "user": "jane"
+    },
+    "settings": {
+      "someToken": null,
+      "employeeApi": {
+        "baseUrl": "https://employee-api.acme.com"
+      },
+      "cdn": {
+        "baseUrl": "https://cdn.acme.com"
+      },
+      "welcomeMessage": "Welcome to acme web",
+      "backgroundColor": "#4884157",
+      "etc": "etc"
+    }
+  }
+}
+```
+
+**session** values comes from your security plugin and  **settings** from `"frontend": {}` in your application.json
+
+Your app (vue, react, angular, jquery, etc) must consume this endpoint in an early line in order to pass the configuration and session values to the entire application (js files)
+
+# Development (vue, angular, react, etc)
+
+In development stage, you must mock the  settings endpoint and use it with javascript variable.
+
+You can inject this variable using [webpack](https://gist.github.com/jrichardsz/1d11120dab4764f4d7f42faf6460997f)
+
+After that, add this snippet in the entrypoint of your app or an early line:
+
+```js
+var settingsUrl;
+if(DEV_SETTINGS_URL){
+  settingsUrl = DEV_SETTINGS_URL;
+}else{
+  var urlHelper = new microfrontendTools.UrlHelper();
+  settingsUrl = urlHelper.getLocationBasePath();
+}
+```
+
+In real environment, if your GeoFrontend server is deployed as www.acme.com, settings url will be www.acme.com/settings.json. You can use [microfrontend-tools](https://github.com/utec/microfrontend-tools) to get the exact settings url no matter if ip:port or domain is used.
+
+Finally consume this url it with axios or pure javascript like **sample/index.html**
+
 # Custom Security
 
-Basically you just need to create an npm module with the following interface:
+By default, just a basic security is enabled. In order to disable it, change security.enable to false in application.json. Addtionally you can delete npmModule and configModule in application.json
+
+If you need to create a custom security (users in a database ,an external api, oauth, google, etc), basically you just need to create a **plugin in form of an npm module** with the following interface:
 
 **my-custom-security-module**
 ```javascript
@@ -109,6 +174,8 @@ Configure it in your application.json:
 ```
 
 And add it to your package.json.
+
+**configModule** will be passed as argument to your plugin. Line 32 in security/SecurityConfigurator.js
 
 > Note: You must publish your module in the public npm registry, in [github](https://stackoverflow.com/a/21918559/3957754) or in your private npm registry. At least option, you could add your code to the geofrontend code.
 

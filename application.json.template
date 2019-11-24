@@ -1,7 +1,7 @@
 {
   "server": {
     "security": {
-      "enable": false,
+      "enable": true,
       "npmModule": {
         "name": "basic-security-client"
       },
@@ -9,10 +9,11 @@
         "user": "${AUTH_USER}",
         "password": "${AUTH_PASSWORD}"
       }
-    }
+    },
+    "headerResponseNamePrefix": "ACME-ORG"
   },
   "frontend": {
-    "token": "${token}",
+    "someToken": "${SOME_TOKEN_FROM_MY_BACKEND}",
     "employeeApi": {
       "baseUrl": "https://employee-api.acme.com"
     },
@@ -22,10 +23,5 @@
     "welcomeMessage": "Welcome to acme web",
     "backgroundColor": "#4884157",
     "etc":"etc"
-  },
-  "endpoints": {
-    "settings": {
-      "httpResponseHeaderNamePrefix": "ACME-ORG"
-    }
   }
 }

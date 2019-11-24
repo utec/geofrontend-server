@@ -9,6 +9,7 @@ function SettingsEndpoint() {
   this.createJsonResponse = function(settingsToFrontend, req, res) {
 
     var response = {
+      "status": 200,
       "message": "success",
       "content": settingsToFrontend
     };
@@ -22,8 +23,8 @@ function SettingsEndpoint() {
   }
 
   function getHeaderName(){
-    if(properties.endpoints.settings.httpResponseHeaderNamePrefix){
-      return "X%s-REQUEST-ID".replace("%s","-"+properties.endpoints.settings.httpResponseHeaderNamePrefix );
+    if(properties.server.headerResponseNamePrefix){
+      return "X%s-REQUEST-ID".replace("%s","-"+properties.server.headerResponseNamePrefix);
     }else{
       return "X%s-REQUEST-ID".replace("%s","");
     }
