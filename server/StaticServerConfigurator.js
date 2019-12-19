@@ -41,10 +41,12 @@ function StaticServerConfigurator() {
       if (req.session.connectedUserInformation) {
         var settings = {};
         settings.session = req.session.connectedUserInformation;
-        Object.assign(settings, properties.frontend);
+        settings.settings = properties.frontend;
         settingsEndpoint.createJsonResponse(settings, req, res);
       } else {
-        settingsEndpoint.createJsonResponse(properties.frontend, req, res);
+        var settings = {};
+        settings.settings = properties.frontend;        
+        settingsEndpoint.createJsonResponse(settings, req, res);
       }
     });
 
