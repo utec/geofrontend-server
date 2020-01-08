@@ -62,9 +62,19 @@ function PluginHelper() {
   this.simpleLoadNpmModuleByName = function(npmModuleInfo, npmModuleArguments, callback) {
 
     try {
-      const pathToModule = require.resolve(npmModuleInfo.name)
-      logger.info('module location:' + pathToModule);
-      var npmModule = require(npmModuleInfo.name);
+
+      var moduleRequireLocation;
+      if(npmModuleInfo.name === "basic-security-client"){
+        logger.info("default basic-security-client is enabled");
+        moduleRequireLocation = "../../"+npmModuleInfo.name
+        logger.info("module location:"+moduleRequireLocation);
+      }else{
+        moduleRequireLocation = npmModuleInfo.name
+        const pathToModule = require.resolve(moduleRequireLocation)
+        logger.info('module location:' + pathToModule);
+      }
+
+      var npmModule = require(moduleRequireLocation);
 
       var npmModuleIntance;
 
@@ -74,7 +84,7 @@ function PluginHelper() {
         npmModuleIntance = new npmModule();
       }
 
-      logger.info(npmModuleInfo.name + " module is already to use.");
+      logger.info(npmModuleInfo.name + " module is ready to use.");
       return callback(npmModuleIntance);
     } catch (err) {
       if (err instanceof Error && err.code === "MODULE_NOT_FOUND") {

@@ -34,6 +34,24 @@ function StaticServerConfigurator() {
       sendFile(res, geoFrontServerCommonPagesPath, '/internalError.html');
     });
 
+
+    if (properties.server.logout && properties.server.logout.enabled && properties.server.logout.enabled === true) {
+      logger.info("logout is enabled");
+      if (!properties.server.logout.endpoint) {
+        logger.info("logout endpoint value is missing");
+      }else{
+        logger.info("logout endpoint is valid");
+        app.get(properties.server.logout.endpoint, function(req, res) {
+          logger.info("logout");
+          req.session.destroy();
+          sendFile(res, geoFrontServerCommonPagesPath, '/defaultHome.html');
+        });
+      }
+    }else{
+      logger.info("logout is not configured");
+    }
+
+
     // data from server  to frontend
     // here call to internal systems or whatever to get data
     app.get('/settings.json', hasProtectedAccess, function(req, res) {
@@ -45,7 +63,7 @@ function StaticServerConfigurator() {
         settingsEndpoint.createJsonResponse(settings, req, res);
       } else {
         var settings = {};
-        settings.settings = properties.frontend;        
+        settings.settings = properties.frontend;
         settingsEndpoint.createJsonResponse(settings, req, res);
       }
     });
