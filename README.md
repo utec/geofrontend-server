@@ -19,6 +19,8 @@ In order to publish your static assets, you could choose one of these modes:
 
 **GeoFrontend server as standalone**
 
+> The following steps are tested in Linux environments. For windows check this [guide](https://github.com/utec/geofrontend-server/wiki/Windows-Guideline)
+
 
 # Geofrontend server as npm module
 

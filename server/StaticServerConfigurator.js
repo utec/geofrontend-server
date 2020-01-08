@@ -34,6 +34,17 @@ function StaticServerConfigurator() {
       sendFile(res, geoFrontServerCommonPagesPath, '/internalError.html');
     });
 
+    app.get('/logout', function(req, res) {
+      if (properties.server.enableLogout && properties.server.enableLogout === true) {
+        logger.info("logout");
+        req.session.destroy();
+        sendFile(res, geoFrontServerCommonPagesPath, '/defaultHome.html');
+      }else{
+        res.redirect("/")
+      }
+    });
+
+
     // data from server  to frontend
     // here call to internal systems or whatever to get data
     app.get('/settings.json', hasProtectedAccess, function(req, res) {
@@ -45,7 +56,7 @@ function StaticServerConfigurator() {
         settingsEndpoint.createJsonResponse(settings, req, res);
       } else {
         var settings = {};
-        settings.settings = properties.frontend;        
+        settings.settings = properties.frontend;
         settingsEndpoint.createJsonResponse(settings, req, res);
       }
     });

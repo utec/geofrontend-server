@@ -25,7 +25,7 @@ function BasicSecurityStrategy(expressServer, options) {
         basicSecurityClient.authenticate(credentials, function(authenticateErr, successUrl) {
 
           if (authenticateErr) {
-            logger(authenticateErr);
+            logger.info(authenticateErr);
             res.statusCode = 401;
             res.setHeader('WWW-Authenticate',
             'Basic realm="The username and password you entered did not match our records. Please double-check and try again."');
@@ -33,7 +33,7 @@ function BasicSecurityStrategy(expressServer, options) {
             return;
           }
 
-          logger("Redirect url: " + successUrl);
+          logger.info("Redirect url: " + successUrl);
           req.session.connectedUserInformation = {user:credentials.user};
           req.session.save();
           res.redirect(successUrl);
@@ -52,12 +52,12 @@ function BasicSecurityStrategy(expressServer, options) {
 
 function getCredentialsFromBasicAuth(req) {
   var authHeader = req.headers['authorization'];
-  logger("Authorization Header: "+ authHeader);
+  logger.info("Authorization Header: "+ authHeader);
 
   if(authHeader) {
     var [type, token] = authHeader.split(' ');
-    logger("Authorization Type: "+ type);
-    logger("Authorization Token: "+ token);
+    logger.info("Authorization Type: "+ type);
+    logger.info("Authorization Token: "+ token);
     var [user, password] = Buffer.from(token, 'base64').toString().split(':');
     return {
       user: user,
