@@ -78,7 +78,7 @@ function StaticServerConfigurator() {
     app.use('/', hasProtectedAccess, express.static(geoFrontServerBundlePath));
 
     app.get("*", hasProtectedAccess, function(req, res) {
-      res.sendFile(geoFrontServerBundlePath + '/index.html');
+      res.sendFile('/index.html', { root: geoFrontServerBundlePath })
     });
 
   }
