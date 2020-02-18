@@ -16,6 +16,12 @@ function StaticServerConfigurator() {
 
     var hasProtectedAccess = function(req, res, next) {
 
+      if(properties.server.enableWelcomePage === true && req.session && !req.session.alreadyConnected){
+        req.session.alreadyConnected = true;
+        sendFile(res, geoFrontServerCommonPagesPath, '/welcome.html');
+        return;
+      }
+
       try {
         securityConfigurator.hasProtectedAccess(req, res, next);
       } catch (error) {
@@ -44,7 +50,7 @@ function StaticServerConfigurator() {
         app.get(properties.server.logout.endpoint, function(req, res) {
           logger.info("logout");
           req.session.destroy();
-          sendFile(res, geoFrontServerCommonPagesPath, '/defaultHome.html');
+          sendFile(res, geoFrontServerCommonPagesPath, '/welcome.html');
         });
       }
     }else{
@@ -72,7 +78,7 @@ function StaticServerConfigurator() {
     app.use('/', hasProtectedAccess, express.static(geoFrontServerBundlePath));
 
     app.get("*", hasProtectedAccess, function(req, res) {
-      res.sendFile(geoFrontServerBundlePath + '/index.html')
+      res.sendFile(geoFrontServerBundlePath + '/index.html');
     });
 
   }
