@@ -80,108 +80,13 @@ And just run with: **npm run start**
 
 Go to your browser an enter to http://localhost:8080 and a popup will prompt you asking the credentials.
 
-# application.json
+# Advanced topics
 
-Is the only properties or configurations file. You can use hardcoded values or environment variables.
-
-I recommended you to use **environment variables** to make the application agnostic to the server where will be deployed. You just need export values before server startup.
-
-# /setting.json
-
-Forgot the **.env** file, manually variables configuration and a build for a new environment.
-
-Geofrontend server will expose an endpoint /settings.json with values ready to use as your properties or configurations file.
-
-```json
-{
-  "status": 200,
-  "message": "success",
-  "content": {
-    "session": {
-      "user": "jane"
-    },
-    "settings": {
-      "someToken": null,
-      "employeeApi": {
-        "baseUrl": "https://employee-api.acme.com"
-      },
-      "cdn": {
-        "baseUrl": "https://cdn.acme.com"
-      },
-      "welcomeMessage": "Welcome to acme web",
-      "backgroundColor": "#4884157",
-      "etc": "etc"
-    }
-  }
-}
-```
-
-**session** values comes from your security plugin and  **settings** from `"frontend": {}` in your application.json
-
-Your app (vue, react, angular, jquery, etc) must consume this endpoint in an early line in order to pass the configuration and session values to the entire application (js files)
-
-# Development (vue, angular, react, etc)
-
-In development stage, you must mock the  settings endpoint and use it with javascript variable.
-
-You can inject this variable using [webpack](https://gist.github.com/jrichardsz/1d11120dab4764f4d7f42faf6460997f)
-
-After that, add this snippet in the entrypoint of your app or an early line:
-
-```js
-var settingsUrl;
-if(DEV_SETTINGS_URL){
-  settingsUrl = DEV_SETTINGS_URL;
-}else{
-  var urlHelper = new microfrontendTools.UrlHelper();
-  settingsUrl = urlHelper.getLocationBasePath();
-}
-```
-
-In real environment, if your GeoFrontend server is deployed as www.acme.com, settings url will be www.acme.com/settings.json. You can use [microfrontend-tools](https://github.com/utec/microfrontend-tools) to get the exact settings url no matter if ip:port or domain is used.
-
-Finally consume this url it with axios or pure javascript like **sample/index.html**
-
-# Custom Security
-
-By default, just a basic security is enabled. In order to disable it, change security.enable to false in application.json. Addtionally you can delete npmModule and configModule in application.json
-
-If you need to create a custom security (users in a database ,an external api, oauth, google, etc), basically you just need to create a **plugin in form of an npm module** with the following interface:
-
-**my-custom-security-module**
-```javascript
-function MyCustomSecurity(expressServer, options) {
-
-  // required method
-  this.ensureAuthenticated = function(req, res, next) {
-    //put here your custom logic
-  }
-
-  //add another functions
-}
-
-module.exports = MyCustomSecurity;
-```
-
-Configure it in your application.json:
-
-```json
-"npmModule": {
-  "name": "my-custom-security-module"
-},
-"configModule": {
-  "param1": "at-field",
-  "param_n": "dummy-eva"
-}
-```
-
-And add it to your package.json.
-
-**configModule** will be passed as argument to your plugin. Line 32 in security/SecurityConfigurator.js
-
-> Note: You must publish your module in the public npm registry, in [github](https://stackoverflow.com/a/21918559/3957754) or in your private npm registry. At least option, you could add your code to the geofrontend code.
-
-A complete guideline is available in the [wiki](https://github.com/utec/geofrontend-server/wiki/Custom-Security)
+- [What is application.json](https://github.com/utec/geofrontend-server/wiki/What-is-application.json)
+- [What is settings.json](https://github.com/utec/geofrontend-server/wiki/What-is-settings.json)
+- [Mock settings.json with Webpack](https://github.com/utec/geofrontend-server/wiki/Mock-settings-with-Webpack)
+- [How create custom security](https://github.com/utec/geofrontend-server/wiki/How-create-custom-security)
+- [Enable welcome page](https://github.com/utec/geofrontend-server/wiki/Enable-welcome-page)
 
 # Roadmap
 
