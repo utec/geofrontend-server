@@ -10,10 +10,14 @@
         "password": "${AUTH_PASSWORD}"
       }
     },
-    "headerResponseNamePrefix": "ACME-ORG"
+    "logPath" : "${LOG_PATH}",
+    "logLevel" : "${LOG_LEVEL}",
+    "enableWelcomePage": false,
+    "logout": "/logout",
+    "serverExpirationTime":3600    
   },
   "frontend": {
-    "someToken": "${SOME_TOKEN_FROM_MY_BACKEND}",
+    "token": "${MY_BACKEND_TOKEN}",
     "employeeApi": {
       "baseUrl": "https://employee-api.acme.com"
     },

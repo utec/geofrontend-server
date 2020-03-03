@@ -4,7 +4,7 @@ var fs = require('fs');
 function PropertiesReader() {
 
   this.registerFromJsonFile = function(jsonFilepath,charset) {
-
+    console.log(jsonFilepath);
     if (fs.existsSync(jsonFilepath)) {
       var rawJsonFile = fs.readFileSync(jsonFilepath, charset);
       var inflatedProperties = inflateEnvironmentVariables(JSON.parse(rawJsonFile));

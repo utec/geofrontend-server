@@ -1,6 +1,7 @@
 "use strict";
-
+var httpContext = require('express-http-context');
 var path = require('path');
+const uuid = require('uuid');
 
 function StaticServerConfigurator() {
 
@@ -16,45 +17,59 @@ function StaticServerConfigurator() {
 
     var hasProtectedAccess = function(req, res, next) {
 
-      if(properties.server.enableWelcomePage === true && req.session && !req.session.alreadyConnected){
-        req.session.alreadyConnected = true;
-        sendFile(res, geoFrontServerCommonPagesPath, '/welcome.html');
-        return;
+      // comes from
+      // - /
+      // - /settings.json
+      // - /signin
+      // - /whatever/../../
+
+      //just for settigns.json
+      if(req.path.endsWith("/settings.json")){
+        //not a session
+        if(!req.session.connectedUserInformation){
+          var settings = {};
+          settings.session = {};
+          settings.session.expiredSession = true;
+          responseUtil.createJsonResponse(settings, req, res);
+          return;
+        }
+        // comes from settings and has a valid session, go to hasProtectedAccess validation
+      }else{
+        //any other request
+        //has almost one access and sign button was pressed
+        if(typeof req.session.hasAlreadyEntered === 'undefined' || typeof req.session.signinStarted === 'undefined'){
+          if(properties.server.enableWelcomePage === true){
+            req.session.hasAlreadyEntered = true;
+            res.redirect("/access");
+            return;
+          }
+        }
       }
 
       try {
         securityConfigurator.hasProtectedAccess(req, res, next);
       } catch (error) {
         logger.error("requested resource:" + req.originalUrl + " | " + error.code + ": " + error.message);
-        if (error.code == "EMAIL_NOT_ALLOWED") {
-          sendFile(res, geoFrontServerCommonPagesPath, '/userNotAllowedError.html');
-        } else {
-          sendFile(res, geoFrontServerCommonPagesPath, '/internalError.html');
-        }
+        res.redirect("/error");
       }
     };
 
     // data from server  to frontend
     // here call to internal systems or whatever to get data
     app.get('/error', function(req, res) {
-      sendFile(res, geoFrontServerCommonPagesPath, '/internalError.html');
+      res.render("error.ejs", {
+          request_id: sessions[req.sessionID]
+      });
     });
 
 
-    if (properties.server.logout && properties.server.logout.enabled && properties.server.logout.enabled === true) {
-      logger.info("logout is enabled");
-      if (!properties.server.logout.endpoint) {
-        logger.info("logout endpoint value is missing");
-      }else{
-        logger.info("logout endpoint is valid");
-        app.get(properties.server.logout.endpoint, function(req, res) {
-          logger.info("logout");
-          req.session.destroy();
-          sendFile(res, geoFrontServerCommonPagesPath, '/welcome.html');
-        });
-      }
-    }else{
-      logger.info("logout is not configured");
+    if (properties.server.logout && properties.server.logout.length>0) {
+      logger.info("logout is enabled:"+properties.server.logout);
+      app.get(properties.server.logout, function(req, res) {
+        logger.info("logout");
+        req.session.destroy();
+        res.redirect("/");
+      });
     }
 
 
@@ -64,13 +79,35 @@ function StaticServerConfigurator() {
 
       if (req.session.connectedUserInformation) {
         var settings = {};
+        settings.session = {};
         settings.session = req.session.connectedUserInformation;
+        settings.session.expiredSession = false;
         settings.settings = properties.frontend;
-        settingsEndpoint.createJsonResponse(settings, req, res);
+        responseUtil.createJsonResponse(settings, req, res);
       } else {
         var settings = {};
-        settings.settings = properties.frontend;
-        settingsEndpoint.createJsonResponse(settings, req, res);
+        settings.session = {};
+        settings.session.expiredSession = true;
+        responseUtil.createJsonResponse(settings, req, res);
+      }
+    });
+
+    app.get('/access', function(req, res) {
+      if(properties.server.enableWelcomePage === true){
+        res.render("welcome.ejs", {});
+      }else{
+        res.redirect("/");
+      }
+    });
+
+    app.get('/signin', function(req, res) {
+
+      if(properties.server.enableWelcomePage === true){
+        req.session.hasAlreadyEntered = true;
+        res.redirect("/");
+        req.session.signinStarted = true;
+      }else{
+        res.redirect("/");
       }
     });
 

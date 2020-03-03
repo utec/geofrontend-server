@@ -26,14 +26,47 @@
       }
     }
 
-    var configurationsEndpoint = getBaseDomainUrl() + "/settings.json";
-    var req = new XMLHttpRequest();
-    req.open("GET", configurationsEndpoint, true);
-    req.send();
-    req.onload = function() {
-      var json = JSON.parse(req.responseText);
-      document.getElementById("json").textContent=JSON.stringify(json,null,'\t');
-    };
+
+    function simulateUserActivity() {
+
+        if(isUserIdle()){
+          return;
+        }
+
+        console.log(new Date());
+
+        //consume settings
+        consumeSettings(function(settingsResponse){
+          document.getElementById("json").textContent=JSON.stringify(settingsResponse, null, 2);
+        });
+    }
+
+    function isUserIdle() {
+        try {
+          return IDLE_USER
+        } catch (e) {
+          return false;
+        }
+    }
+
+    function consumeSettings(callback) {
+      var configurationsEndpoint = getBaseDomainUrl() + "/settings.json";
+      var req = new XMLHttpRequest();
+      req.open("GET", configurationsEndpoint, true);
+      req.send();
+      req.onload = function() {
+        return callback(JSON.parse(req.responseText));
+      };
+    }
+
+    //consume settings
+    consumeSettings(function(settingsResponse){
+      document.getElementById("json").textContent=JSON.stringify(settingsResponse, null, 2);
+    });
+
+    //simulate
+    setInterval(simulateUserActivity, 4000); // Time in milliseconds
+
   </script>
   <p>This is an example of a simple HTML page loading configurations using ajax:</p>
   <pre id="json"></pre>

@@ -1,52 +1,56 @@
 const path = require('path');
 
-function CommandLineArgumentsHelper() {
-}
+function CommandLineArgumentsHelper() {}
 
 CommandLineArgumentsHelper.configureGlobalParameters = function(launchedArguments, localGeoFrontServerHomePath) {
+  const args = require("args-parser")(process.argv)
+  var processFolderPath = process.cwd();
 
-  if (isLaunchedAsModule(launchedArguments)) {
-  	console.log("Geofront Server is launching as npm module");
-    var parameters = getGeoFrontServerParameters(launchedArguments);
+  console.log("Geofront Server is starting");
+  console.log("arguments:");
+  console.log(args);
 
-    global.geoFrontServerHomePath = localGeoFrontServerHomePath;
-  	global.geoFrontServerConfigurationsFilePath = parameters.geoFrontServerConfigurationsFilePath;
-  	global.geoFrontServerBundlePath = parameters.geoFrontServerBundlePath;
+  console.log("process directory : "+processFolderPath);
+  console.log("geofront server path: "+localGeoFrontServerHomePath);
 
-  	if(parameters.geoFrontServerCommonPagesPath){
-  	  global.geoFrontServerCommonPagesPath = parameters.geoFrontServerCommonPagesPath;
-  	}else{
-  	  global.geoFrontServerCommonPagesPath = './pages/common';
-  	}
+  global.geoFrontServerHomePath = localGeoFrontServerHomePath;
 
-  } else {
-  	console.log("Geofront Server is launching as server");
-    global.geoFrontServerHomePath = process.cwd();
-    global.geoFrontServerConfigurationsFilePath = process.cwd() + path.sep + "application.json";
-    global.geoFrontServerBundlePath = process.cwd() + path.sep + 'build';
-    global.geoFrontServerCommonPagesPath = process.cwd() + path.sep + 'pages/common';
+  if (typeof args.config === 'undefined') {
+    global.geoFrontServerConfigurationsFilePath = processFolderPath + path.sep + "application.json";
+    console.log("-config parameter was not found. Default application.json path will be used:"+geoFrontServerConfigurationsFilePath);
+  }else{
+    global.geoFrontServerConfigurationsFilePath = getRealPath(args.config, processFolderPath);
+  }
+
+  if (typeof args.pages === 'undefined') {
+    global.geoFrontServerCommonPagesPath = processFolderPath + path.sep + 'pages/common';
+    console.log("-pages parameter was not found. Default common pages path will be used:"+geoFrontServerCommonPagesPath);
+  }else{
+    global.geoFrontServerCommonPagesPath = getRealPath(args.pages, processFolderPath);
+  }
+
+  if (typeof args.bundle === 'undefined') {
+    global.geoFrontServerBundlePath = processFolderPath + path.sep + 'build';
+    console.log("-bundle parameter was not found. Default bundle path will be used:"+geoFrontServerBundlePath);
+  }else{
+    global.geoFrontServerBundlePath = getRealPath(args.bundle, processFolderPath);
   }
 
 };
 
-function isLaunchedAsModule (launchedArguments) {
+function isLaunchedAsModule(arguments) {
   //if has more than 2 arguments, it was launched as npm module
-  return (launchedArguments.length > 2);
+  return Object.keys(arguments).length > 0
 };
 
-function getGeoFrontServerParameters(launchedArguments) {
-
-  if(launchedArguments.length < 4){
-    throw new Error("02 parameters at least are required. Current parameters count: "+launchedArguments.length + " and values: "+launchedArguments.slice(2));
+function getRealPath(unwnownPath, defaultRootFolder) {
+  if(unwnownPath.startsWith(".")){
+    return defaultRootFolder + unwnownPath.substring(1, unwnownPath.length);
+  }else if(unwnownPath.startsWith(path.sep)){
+    return unwnownPath;
+  }else{
+    throw new Error(unwnownPath+" does not start with dot or slash.");
   }
-
-  //TODO:validate
-  return {
-    "geoFrontServerConfigurationsFilePath":launchedArguments[2],
-    "geoFrontServerBundlePath":launchedArguments[3],
-    "geoFrontServerCommonPagesPath":(launchedArguments.length >3 ? launchedArguments[4]:null)
-  }
-
 };
 
 module.exports = CommandLineArgumentsHelper;
