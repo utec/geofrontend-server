@@ -34,7 +34,7 @@ Add an entry in your scripts:
 
 ```json
 "scripts": {
-  "start": "geofrontend-server $INIT_CWD/application.json $INIT_CWD/public"
+  "start": "geofrontend-server -config=./application.json -bundle=./build"
 }
 ```
 
@@ -46,6 +46,8 @@ Export these values:
 export AUTH_USER=jane
 export AUTH_PASSWORD=doe
 export PORT=8080
+export LOG_PATH=/tmp/app.log
+export LOG_LEVEL=info
 ```
 
 Build your app with **npm run build**
@@ -60,7 +62,7 @@ Go to your browser an enter to http://localhost:8080 and a popup will prompt you
 
 - Clone this repository
 - Execute **npm run build** or any command required to **build** your application.
-- Move all your static files (html, css, js, img) into build folder. **index.html** file must exist. You could use the index.html in this repository as example.
+- Move all your static files (html, css, js, img) into build folder. **index.html** file must exist. You could use the index.html in **sample** folder.
 - Rename the default **application.json.template** to **application.json**
 - Install node libraries :
 
@@ -70,10 +72,12 @@ npm install
 
 Export these values:
 
-```
+```bash
 export AUTH_USER=jane
 export AUTH_PASSWORD=doe
 export PORT=8080
+export LOG_PATH=/tmp/app.log
+export LOG_LEVEL=info
 ```
 
 And just run with: **npm run start**
@@ -91,7 +95,8 @@ Go to your browser an enter to http://localhost:8080 and a popup will prompt you
 # Roadmap
 
 - [ ] Use an advanced session store (i.e redis, mongo.) instead express default memory.
-- [ ] Search an easy way for development stage: Frameworks in development mode, uses internal light server like express and **geofrontend server** works only for your builded assets.
+- [ ] Add https://github.com/jrichardsz/dependency-injection-4nodejs
+- [ ] Unit tests
 
 # Contributors
 

@@ -16,12 +16,16 @@
     "node": "8.9.4"
   },
   "dependencies": {
+    "args-parser": "1.1.0",
     "cookie-parser": "1.4.4",
+    "cookie-session": "1.4.0",
     "cors": "2.8.5",
+    "ejs": "3.0.1",
     "express": "4.17.1",
+    "express-http-context": "1.2.3",
     "express-session": "1.16.2",
     "log4js": "5.0.0",
     "nodemon": "1.19.1",
-    "uuid": "^3.3.3"
+    "uuid": "3.3.3"
   }
 }
