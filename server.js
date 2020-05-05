@@ -25,6 +25,8 @@ JavascriptModulesDiscover.scan(geoFrontServerHomePath, ["server.js", "build"]);
 
 //expose application.json values as global variable: properties
 propertiesReader.registerFromJsonFile(geoFrontServerConfigurationsFilePath, "utf8");
+console.log("properties:");
+console.log(JSON.stringify(properties, null, 4));
 
 app.use(session({
   secret: uuid.v4(),
