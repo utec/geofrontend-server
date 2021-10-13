@@ -1,4 +1,5 @@
 "use strict";
+const PublicLoginRestClient = require('../login/PublicLoginRestClient.js');
 var httpContext = require('express-http-context');
 var path = require('path');
 const uuid = require('uuid');
@@ -6,6 +7,8 @@ const uuid = require('uuid');
 function StaticServerConfigurator() {
 
   this.start = function(express, app) {
+
+    var publicLoginRestClient = new PublicLoginRestClient(properties.server.security.configModule.publicLoginBaseUrl);
 
     logger.info("Security:" + (properties.server.security.enable));
 
@@ -105,6 +108,43 @@ function StaticServerConfigurator() {
       }
     });
 
+    app.get('/public/login', function(req, res) {
+      if(properties.server.security.configModule.enablePublicLogin === true){
+        res.render("publicLogin.ejs", {});
+      }else{
+        res.redirect("/");
+      }
+    });
+
+    app.use(express.urlencoded({extended:false}))
+
+    app.post('/public/login', function(req, res) {
+      if(properties.server.security.configModule.enablePublicLogin === true){
+        logger.error("Public login is enabled")
+        var requestId = getRequestId(req)
+        var params = {
+          "email": req.body.publicEmail, 
+          "password": req.body.publicPassword
+        }
+
+        publicLoginRestClient.authenticate(params, requestId, function (error, response) {
+          if(response !== null){
+            logger.info("Sending to horus/public/login in horusOauthSecurityStrategy")
+            req.session.publicUserInformation = response;
+            res.redirect("/horus/public/login")
+          } else {
+            logger.error(error)
+            res.redirect("/public/login");
+          }
+        })
+
+      }else{
+        logger.error("Public login is disabled")
+        res.redirect("/");
+      }
+    });
+
+
     app.get('/signin', function(req, res) {
       logger.debug("/signin started")
       if(properties.server.enableWelcomePage === true){
@@ -124,6 +164,14 @@ function StaticServerConfigurator() {
       res.sendFile('/index.html', { root: geoFrontServerBundlePath })
     });
 
+  }
+
+  function getRequestId(req) {
+    if (sessions && req.sessionID && typeof sessions[req.sessionID] !== 'undefined') {
+      return sessions[req.sessionID];
+    } else {
+      return uuid.v4();
+    }
   }
 
   function sendFile(res, commmonPagesPath, commonPage){
