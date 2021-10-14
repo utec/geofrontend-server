@@ -48,10 +48,10 @@ function StaticServerConfigurator() {
         if(typeof req.session.hasAlreadyEntered === 'undefined' || typeof req.session.signinStarted === 'undefined'){
           if(properties.server.enableWelcomePage === true){
             req.session.hasAlreadyEntered = true;
-            if(!req.session.originalUrl || !req.session.originalUrl.length){
-              req.session.originalUrl = req.originalUrl
-              logger.info("original url ====>")
-            }
+
+            if(!req.session.originalUrl 
+                || !req.session.originalUrl.length)
+                      req.session.originalUrl = req.originalUrl
 
             res.redirect("/access");
             return;
@@ -167,7 +167,6 @@ function StaticServerConfigurator() {
     app.use('/', hasProtectedAccess, express.static(geoFrontServerBundlePath));
 
     app.get("*", hasProtectedAccess, function(req, res) {
-      logger.info("primera carga ?")
       res.sendFile('/index.html', { root: geoFrontServerBundlePath })
     });
 
