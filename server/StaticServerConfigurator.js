@@ -21,6 +21,7 @@ function StaticServerConfigurator() {
     var hasProtectedAccess = function(req, res, next) {
 
       logger.debug("requested resource:" + req.originalUrl);
+      
 
       // comes from
       // - /
@@ -46,8 +47,8 @@ function StaticServerConfigurator() {
         logger.debug("req.session.signinStarted:"+req.session.signinStarted)
         if(typeof req.session.hasAlreadyEntered === 'undefined' || typeof req.session.signinStarted === 'undefined'){
           if(properties.server.enableWelcomePage === true){
-            localStorage.setItem("originUrl", req.originalUrl)
             req.session.hasAlreadyEntered = true;
+            req.session.originalUrl = req.originalUrl
             res.redirect("/access");
             return;
           }

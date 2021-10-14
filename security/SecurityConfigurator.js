@@ -30,8 +30,6 @@ function SecurityConfigurator() {
 
     pluginHelper.simpleLoadNpmModuleByName(npmModule, [], function(npmModuleIntance) {
       _this.securityStrategy = npmModuleIntance.getSecurityStrategy(app, configModule);
-      logger.info("strategy =====>")
-      logger.info( JSON.stringify(_this.securityStrategy))
       if (_this.securityStrategy) {
         logger.info("Security validator is configured now");
       }else{
@@ -42,8 +40,6 @@ function SecurityConfigurator() {
   }
 
   this.hasProtectedAccess = function(req, res, next) {
-    logger.info("segurityConfiguratior.hasprotectedAccess ======>")
-    logger.info(JSON.stringify(req))
     if (!_this.configurations.enable) {
       logger.debug("Skip Security for:" + req.originalUrl)
       return next();
