@@ -48,7 +48,11 @@ function StaticServerConfigurator() {
         if(typeof req.session.hasAlreadyEntered === 'undefined' || typeof req.session.signinStarted === 'undefined'){
           if(properties.server.enableWelcomePage === true){
             req.session.hasAlreadyEntered = true;
-            req.session.originalUrl = req.originalUrl
+            if(!req.session.originalUrl || !req.session.originalUrl.length){
+              req.session.originalUrl = req.originalUrl
+              logger.info("original url ====>")
+            }
+
             res.redirect("/access");
             return;
           }
