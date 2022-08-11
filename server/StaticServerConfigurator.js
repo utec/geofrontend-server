@@ -22,6 +22,10 @@ function StaticServerConfigurator() {
 
       logger.debug("requested resource:" + req.originalUrl);
 
+      if(req.originalUrl.startsWith("/dashboard?")) {
+        req.session.originalUrl = req.originalUrl;
+      }
+
       // comes from
       // - /
       // - /settings.json
