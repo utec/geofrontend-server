@@ -22,6 +22,10 @@ function StaticServerConfigurator() {
 
       logger.debug("requested resource:" + req.originalUrl);
 
+      // set referer on req session
+      req.session.referer = req.session.referer === undefined ? req.get('Referrer') || req.get('Referer') : req.session.referer
+
+      // set originalUrl if startsWith "dashboard?" (query param)
       if(req.originalUrl.startsWith("/dashboard?")) {
         req.session.originalUrl = req.originalUrl;
       }
@@ -93,6 +97,7 @@ function StaticServerConfigurator() {
         var settings = {};
         settings.session = {};
         settings.session = req.session.connectedUserInformation;
+        settings.session.referer = req.session.referer;
         settings.session.expiredSession = false;
         settings.settings = properties.frontend;
         responseUtil.createJsonResponse(settings, req, res);
