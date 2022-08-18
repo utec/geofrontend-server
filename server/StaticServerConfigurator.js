@@ -198,12 +198,12 @@ function StaticServerConfigurator() {
   }
 
   function isAllowedDomain (domain, listDomains){
-    console.log("referer:", domain)
+    logger.debug("isAllowedDomain referer:", domain)
     if(domain == null) return false;
 
     let allowed = false;
     listDomains.split(",").forEach(dom => {
-        console.log("foreach -> ", dom)
+        logger.debug("isAllowedDomain foreach -> ", dom)
         let re = new RegExp(dom);
         allowed = allowed || re.test(domain)
     });
