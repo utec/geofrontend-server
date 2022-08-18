@@ -22,6 +22,16 @@ function StaticServerConfigurator() {
 
       logger.debug("requested resource:" + req.originalUrl);
 
+      // set referer on req session
+      if(properties.server.allowedDomains !== undefined){
+        var referer = req.get('Referrer') || req.get('Referer')
+        logger.debug("referer: ", referer)
+        if(isAllowedDomain(referer, properties.server.allowedDomains)) {
+          req.session.allowed = true
+        }
+      }
+
+      // set originalUrl if startsWith "dashboard?" (query param)
       if(req.originalUrl.startsWith("/dashboard?")) {
         req.session.originalUrl = req.originalUrl;
       }
@@ -93,6 +103,7 @@ function StaticServerConfigurator() {
         var settings = {};
         settings.session = {};
         settings.session = req.session.connectedUserInformation;
+        settings.session.allowed = req.session.allowed;
         settings.session.expiredSession = false;
         settings.settings = properties.frontend;
         responseUtil.createJsonResponse(settings, req, res);
@@ -184,6 +195,20 @@ function StaticServerConfigurator() {
     }else{
       res.sendFile(commmonPagesPath + commonPage)
     }
+  }
+
+  function isAllowedDomain (domain, listDomains){
+    logger.debug("isAllowedDomain referer:", domain)
+    if(domain == null) return false;
+
+    let allowed = false;
+    listDomains.split(",").forEach(dom => {
+        logger.debug("isAllowedDomain foreach -> ", dom)
+        let re = new RegExp(dom);
+        allowed = allowed || re.test(domain)
+    });
+
+    return allowed;
   }
 
 }
