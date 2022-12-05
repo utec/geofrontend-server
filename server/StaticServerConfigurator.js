@@ -122,6 +122,13 @@ function StaticServerConfigurator() {
         res.redirect("/");
       }
     });
+    app.get('/public/solicitudes', function(req,res){
+      if(properties.server.enableWelcomePage === true){
+        res.render("reingreso.ejs",{});
+      }else{
+        res.redirect("/");
+      }
+    });
 
     app.get('/public/login', function(req, res) {
       if(properties.server.security.configModule.enablePublicLogin === true){
