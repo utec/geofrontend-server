@@ -1,15 +1,17 @@
 "use strict";
 const PublicLoginRestClient = require('../login/PublicLoginRestClient.js');
+const PublicSolicitudRestClient = require('../login/PublicSolicitudRestClient.js');
 var httpContext = require('express-http-context');
 var path = require('path');
 const uuid = require('uuid');
+const fetch = require("isomorphic-fetch");
 
 function StaticServerConfigurator() {
 
   this.start = function(express, app) {
 
     var publicLoginRestClient = new PublicLoginRestClient(properties.server.security.configModule.publicLoginBaseUrl);
-
+    var publicSolictudRestClient = new PublicSolicitudRestClient(properties.server.security.configModule.publicSolicitudBaseUrl);
     logger.info("Security:" + (properties.server.security.enable));
 
     if (properties.server.security.enable === "undefined") {
@@ -124,6 +126,7 @@ function StaticServerConfigurator() {
     });
     app.get('/public/solicitudes', function(req,res){
       if(properties.server.enableWelcomePage === true){
+        console.log('entro');
         res.render("reingreso.ejs",{});
       }else{
         res.redirect("/");
@@ -166,6 +169,55 @@ function StaticServerConfigurator() {
       }
     });
 
+    app.post('/public/solicitudes', function(req, res) {
+      console.log('entro al post');
+      if(properties.server.security.configModule.enablePublicLogin === true){
+        logger.error("Public access to solicitudes is enabled")
+        var requestId = getRequestId(req)
+        var reCaptchaIsValid = false
+        const response_key = req.body["g-recaptcha-response"];
+        // Put secret key here, which we get from google console
+        const secret_key = "6Lc0d1sjAAAAAEwMoQpsdg5M3YsBbgW4aB-b5HMn";
+      
+        // Hitting POST request to the URL, Google will
+        // respond with success or error scenario.
+        const url = `https://www.google.com/recaptcha/api/siteverify?secret=${secret_key}&response=${response_key}`;
+        logger.info(url);
+        // Making POST request to verify captcha
+        
+        validationRecaptcha(url).then(
+          response => {
+            reCaptchaIsValid=response;
+            if(reCaptchaIsValid){
+              logger.error(req.body);
+              var params = {
+                "codeStudent": req.body.codeStudent, 
+                "docIdentidad": req.body.docIdentidad,
+                "correoPersonal": req.body.correoPersonal,
+                "tipoDocument": req.body.tipoDocument
+              }
+      
+              publicSolictudRestClient.authenticate(params, requestId, function (error, response) {
+                if(response !== null && response.cumpleValidacion){
+                  console.log(response);
+                  logger.info("Sending to horus/public/login in horusOauthSecurityStrategy")
+                  req.session.publicUserInformation = response;
+                  res.redirect("/horus/public/login")
+                } else {
+                  logger.error(error)
+                  res.redirect("/public/solicitudes");
+                }
+              })
+      
+            }
+
+          });
+        
+      }else{
+        logger.error("Public access to solicitudes is disabled")
+        res.redirect("/");
+      }
+    });
 
     app.get('/signin', function(req, res) {
       logger.debug("/signin started")
@@ -194,6 +246,19 @@ function StaticServerConfigurator() {
     } else {
       return uuid.v4();
     }
+  }
+  function validationRecaptcha(url){
+    return fetch(url, {
+      method: "post",
+    })
+      .then((response) => response.json())
+      .then((google_response) => {
+        return google_response.success;
+      })
+      .catch((error) => {
+          logger.error(error);
+        return res.json({ error ,reCaptchaIsValid});
+      });
   }
 
   function sendFile(res, commmonPagesPath, commonPage){
