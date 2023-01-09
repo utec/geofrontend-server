@@ -202,7 +202,7 @@ function StaticServerConfigurator() {
                   console.log(response);
                   logger.info("Sending to horus/public/login in horusOauthSecurityStrategy")
                   req.session.publicUserInformation = response;
-                  res.redirect("/horus/public/login")
+                  res.redirect("/horus/solicitud/login")
                 } else {
                   logger.error(error)
                   res.redirect("/public/solicitudes");
