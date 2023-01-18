@@ -35,7 +35,7 @@ function PublicSolicitudRestClient(baseUrl,securitybaseUrl) {
                         'content-type': 'application/json',
                         'X-UTEC-REQUEST-ID': requestId,
                         'X-UTEC-CONSUMER-ID': 'FINANCE-HELP-WEB',
-                        'X-Auth-Token': response.content
+                        'X-Auth-Token': response.data.content
                     },
                     url: authenticateEndpoint,
                     data: params,
