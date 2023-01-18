@@ -13,12 +13,12 @@ function PublicSolicitudRestClient(baseUrl,securitybaseUrl) {
             .post(
                 securitybaseUrl,
                 {
-                'correlationId': 20,
-                'consumerId': "PUBLIC-PAGE-WEB-client",
-                'parameters': {
-                    'clientId': "e57cf916-e359-4779-b8ca-0286572519d6.utecapps.edu.pe",
-                    'clientSecret': "03049cab-7a60-471f-8467-6337963b6631"
-                }
+                    'correlationId': 20,
+                    'consumerId': "PUBLIC-PAGE-WEB-client",
+                    'parameters': {
+                        'clientId': "e57cf916-e359-4779-b8ca-0286572519d6.utecapps.edu.pe",
+                        'clientSecret': "03049cab-7a60-471f-8467-6337963b6631"
+                    }
                 },
                 { 
                     headers: {
@@ -28,7 +28,7 @@ function PublicSolicitudRestClient(baseUrl,securitybaseUrl) {
                     } 
                 }
             ).then(function(response){
-                logger.info("Auth Response: "+JSON.stringify(response));
+                logger.info("Auth Response: "+JSON.stringify(response.data));
                 axios({
                     method: 'POST',
                     headers: {
@@ -66,6 +66,12 @@ function PublicSolicitudRestClient(baseUrl,securitybaseUrl) {
                         }
                         return callback("Authenticate Public solicitud Endpoint is down or " + authenticateEndpoint + " does not respond: " + err.message, null);
                     });
+            }).catch(function (err) {
+                logger.error(err.stack);
+                if (err.response && err.response.data && err.response.status && err.response.data.message) {
+                    logger.error("Error: " + err.response.data.status + ", message:" + err.response.data.message);
+                }
+                return callback("Authenticate Public solicitud Endpoint is down or " + authenticateEndpoint + " does not respond: " + err.message, null);
             });
         } catch (globalErr) {
             logger.error(globalErr.stack);
