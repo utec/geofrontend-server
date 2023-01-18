@@ -8,7 +8,7 @@ function PublicSolicitudRestClient(baseUrl,securitybaseUrl) {
     this.authenticate = async function (params, requestId, callback) {
 
         try {
-            logger.info("Security base Url: " + authenticateEndpoint)
+            logger.info("Security base Url: " + securitybaseUrl)
             const auth = await axios
             .post(
                 securitybaseUrl,
@@ -29,7 +29,7 @@ function PublicSolicitudRestClient(baseUrl,securitybaseUrl) {
                 }
             )
             
-            logger.info("Auth Response: "+auth);
+            logger.info("Auth Response: "+JSON.stringify(auth));
             
             await axios({
                 method: 'POST',
