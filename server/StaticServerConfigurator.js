@@ -186,7 +186,7 @@ function StaticServerConfigurator() {
         // Making POST request to verify captcha
         
         validationRecaptcha(url).then(
-          response => {
+          async response => {
             reCaptchaIsValid=response;
             if(reCaptchaIsValid){
               logger.error(req.body);
@@ -197,7 +197,7 @@ function StaticServerConfigurator() {
                 "tipoDocument": req.body.tipoDocument
               }
       
-              publicSolictudRestClient.authenticate(params, requestId, function (error, response) {
+              await publicSolictudRestClient.authenticate(params, requestId, function (error, response) {
                 if(response !== null && response.cumpleValidacion){
                   console.log(response);
                   logger.info("Sending to horus/public/login in horusOauthSecurityStrategy")

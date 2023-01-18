@@ -5,18 +5,41 @@ function PublicSolicitudRestClient(baseUrl) {
 
     var authenticateEndpoint = baseUrl + '/publicAccess/validation';
 
-    this.authenticate = function (params, requestId, callback) {
+    this.authenticate = async function (params, requestId, callback) {
 
         logger.debug(params);
 
         try {
             logger.info("Public solicitud endpoint " + authenticateEndpoint)
-            axios({
+            const auth = await axios
+            .post(
+                urlEndPoint,
+                {
+                'correlationId': 20,
+                'consumerId': "PUBLIC-PAGE-WEB-client",
+                'parameters': {
+                    'clientId': "e57cf916-e359-4779-b8ca-0286572519d6.utecapps.edu.pe",
+                    'clientSecret': "03049cab-7a60-471f-8467-6337963b6631"
+                }
+                },
+                { 
+                    headers: {
+                        'content-type': 'application/json',
+                        'X-UTEC-REQUEST-ID': requestId,
+                        'X-UTEC-CONSUMER-ID': 'FINANCE-HELP-WEB',
+                    } 
+                }
+            )
+            
+            console.log(auth);
+            
+            await axios({
                 method: 'POST',
                 headers: {
                     'content-type': 'application/json',
                     'X-UTEC-REQUEST-ID': requestId,
-                    'X-UTEC-CONSUMER-ID': 'FINANCE-HELP-WEB'
+                    'X-UTEC-CONSUMER-ID': 'FINANCE-HELP-WEB',
+                    'X-Auth-Token':auth.content
                 },
                 url: authenticateEndpoint,
                 data: params,
