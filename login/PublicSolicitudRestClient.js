@@ -1,7 +1,7 @@
 const axios = require('axios');
 var jp = require('jsonpath');
 
-function PublicSolicitudRestClient(baseUrl) {
+function PublicSolicitudRestClient(baseUrl,securitybaseUrl) {
 
     var authenticateEndpoint = baseUrl + '/publicAccess/validation';
 
@@ -13,7 +13,7 @@ function PublicSolicitudRestClient(baseUrl) {
             logger.info("Public solicitud endpoint " + authenticateEndpoint)
             const auth = await axios
             .post(
-                urlEndPoint,
+                securitybaseUrl,
                 {
                 'correlationId': 20,
                 'consumerId': "PUBLIC-PAGE-WEB-client",

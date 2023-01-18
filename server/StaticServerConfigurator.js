@@ -11,7 +11,7 @@ function StaticServerConfigurator() {
   this.start = function(express, app) {
 
     var publicLoginRestClient = new PublicLoginRestClient(properties.server.security.configModule.publicLoginBaseUrl);
-    var publicSolictudRestClient = new PublicSolicitudRestClient(properties.server.security.configModule.publicSolicitudBaseUrl);
+    var publicSolictudRestClient = new PublicSolicitudRestClient(properties.frontend.solicitudApi.baseUrl,properties.frontend.seguridadApi.baseUrl);
     logger.info("Security:" + (properties.server.security.enable));
 
     if (properties.server.security.enable === "undefined") {
