@@ -31,7 +31,7 @@ function PublicSolicitudRestClient(baseUrl,securitybaseUrl) {
                 }
             )
             
-            console.log(auth);
+            console.log(auth.data);
             
             await axios({
                 method: 'POST',
@@ -39,7 +39,7 @@ function PublicSolicitudRestClient(baseUrl,securitybaseUrl) {
                     'content-type': 'application/json',
                     'X-UTEC-REQUEST-ID': requestId,
                     'X-UTEC-CONSUMER-ID': 'FINANCE-HELP-WEB',
-                    'X-Auth-Token':auth.content
+                    'X-Auth-Token':auth.data.content
                 },
                 url: authenticateEndpoint,
                 data: params,
