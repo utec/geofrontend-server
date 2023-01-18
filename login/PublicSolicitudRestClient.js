@@ -9,7 +9,7 @@ function PublicSolicitudRestClient(baseUrl,securitybaseUrl) {
 
         try {
             logger.info("Security base Url: " + securitybaseUrl)
-            const auth = await axios
+            await axios
             .post(
                 securitybaseUrl,
                 {
@@ -27,47 +27,46 @@ function PublicSolicitudRestClient(baseUrl,securitybaseUrl) {
                         'X-UTEC-CONSUMER-ID': 'FINANCE-HELP-WEB',
                     } 
                 }
-            )
-            
-            logger.info("Auth Response: "+JSON.stringify(auth));
-            
-            await axios({
-                method: 'POST',
-                headers: {
-                    'content-type': 'application/json',
-                    'X-UTEC-REQUEST-ID': requestId,
-                    'X-UTEC-CONSUMER-ID': 'FINANCE-HELP-WEB',
-                    'X-Auth-Token':auth.data.content
-                },
-                url: authenticateEndpoint,
-                data: params,
-            })
-                .then(function (response) {
-
-                    if (!response || (typeof response === 'undefined')) {
-                        return callback("Public solicitud endpoint " + authenticateEndpoint + " http response is wrong.", null);
-                    }
-
-                    if (!response.data || (typeof response.data === 'undefined')) {
-                        return callback("Public solicitud endpoint " + authenticateEndpoint + " http response body is null, empty or wrong.", null);
-                    }
-
-                    var status = jp.query(response.data, '$.status');
-
-                    if (status != "200") {
-                        return callback("Public solicitud endpoint " + authenticateEndpoint + " json response contains [status] different to 200:" + JSON.stringify(response.data), null);
-                    }
-
-                    return callback(null, response.data.content);
-
+            ).then(function(response){
+                logger.info("Auth Response: "+JSON.stringify(response));
+                axios({
+                    method: 'POST',
+                    headers: {
+                        'content-type': 'application/json',
+                        'X-UTEC-REQUEST-ID': requestId,
+                        'X-UTEC-CONSUMER-ID': 'FINANCE-HELP-WEB',
+                        'X-Auth-Token': response.content
+                    },
+                    url: authenticateEndpoint,
+                    data: params,
                 })
-                .catch(function (err) {
-                    logger.error(err.stack);
-                    if (err.response && err.response.data && err.response.status && err.response.data.message) {
-                        logger.error("Error: " + err.response.data.status + ", message:" + err.response.data.message);
-                    }
-                    return callback("Authenticate Public solicitud Endpoint is down or " + authenticateEndpoint + " does not respond: " + err.message, null);
-                });
+                    .then(function (response) {
+    
+                        if (!response || (typeof response === 'undefined')) {
+                            return callback("Public solicitud endpoint " + authenticateEndpoint + " http response is wrong.", null);
+                        }
+    
+                        if (!response.data || (typeof response.data === 'undefined')) {
+                            return callback("Public solicitud endpoint " + authenticateEndpoint + " http response body is null, empty or wrong.", null);
+                        }
+    
+                        var status = jp.query(response.data, '$.status');
+    
+                        if (status != "200") {
+                            return callback("Public solicitud endpoint " + authenticateEndpoint + " json response contains [status] different to 200:" + JSON.stringify(response.data), null);
+                        }
+    
+                        return callback(null, response.data.content);
+    
+                    })
+                    .catch(function (err) {
+                        logger.error(err.stack);
+                        if (err.response && err.response.data && err.response.status && err.response.data.message) {
+                            logger.error("Error: " + err.response.data.status + ", message:" + err.response.data.message);
+                        }
+                        return callback("Authenticate Public solicitud Endpoint is down or " + authenticateEndpoint + " does not respond: " + err.message, null);
+                    });
+            });
         } catch (globalErr) {
             logger.error(globalErr.stack);
             return callback("Error when consuming PublicSolicitudRestClient service " + authenticateEndpoint + ":" + globalErr.message, null);
