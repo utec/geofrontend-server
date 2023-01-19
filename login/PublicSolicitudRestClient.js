@@ -29,19 +29,21 @@ function PublicSolicitudRestClient(baseUrl,securitybaseUrl) {
                 }
             ).then(function(response){
                 logger.info("Auth Response: "+JSON.stringify(response.data));
+                logger.info("AuthenticateEndpoint: "+authenticateEndpoint);
+                let tokenV1 = response.data.content
                 axios({
                     method: 'POST',
                     headers: {
                         'content-type': 'application/json',
                         'X-UTEC-REQUEST-ID': requestId,
                         'X-UTEC-CONSUMER-ID': 'FINANCE-HELP-WEB',
-                        'X-Auth-Token': response.data.content
+                        'X-Auth-Token': tokenV1
                     },
                     url: authenticateEndpoint,
                     data: params,
                 })
                     .then(function (response) {
-    
+                        
                         if (!response || (typeof response === 'undefined')) {
                             return callback("Public solicitud endpoint " + authenticateEndpoint + " http response is wrong.", null);
                         }
@@ -55,7 +57,7 @@ function PublicSolicitudRestClient(baseUrl,securitybaseUrl) {
                         if (status != "200") {
                             return callback("Public solicitud endpoint " + authenticateEndpoint + " json response contains [status] different to 200:" + JSON.stringify(response.data), null);
                         }
-    
+                        response.data.content.tokenV1 = tokenV1;
                         return callback(null, response.data.content);
     
                     })
