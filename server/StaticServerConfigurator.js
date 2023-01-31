@@ -177,7 +177,7 @@ function StaticServerConfigurator() {
         var reCaptchaIsValid = false
         const response_key = req.body["g-recaptcha-response"];
         // Put secret key here, which we get from google console
-        const secret_key = "6Lc0d1sjAAAAAEwMoQpsdg5M3YsBbgW4aB-b5HMn";
+        const secret_key = properties.server.security.configModule.recaptcha.privateKey;
       
         // Hitting POST request to the URL, Google will
         // respond with success or error scenario.
