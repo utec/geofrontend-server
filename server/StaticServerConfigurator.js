@@ -198,14 +198,19 @@ function StaticServerConfigurator() {
               }
       
               await publicSolictudRestClient.authenticate(params, requestId, function (error, response) {
-                if(response !== null && response.cumpleValidacion){
-                  console.log(response);
-                  logger.info("Sending to horus/public/login in horusOauthSecurityStrategy")
-                  req.session.publicUserInformation = response;
-                  res.redirect("/horus/solicitud/login")
+                if(response !== null){
+                  if(response.cumpleValidacion){
+                    console.log(response);
+                    logger.info("Sending to horus/public/login in horusOauthSecurityStrategy")
+                    req.session.publicUserInformation = response;
+                    res.redirect("/horus/solicitud/login")
+                  }else{
+                    res.redirect(`/public/solicitudes?error=${5001}}`);
+                  }
+                  
                 } else {
                   logger.error(error)
-                  res.redirect("/public/solicitudes");
+                  res.redirect(`/public/solicitudes?error=${5002}}`);
                 }
               })
       
