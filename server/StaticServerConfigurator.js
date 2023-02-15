@@ -127,7 +127,7 @@ function StaticServerConfigurator() {
     app.get('/public/solicitudes', function(req,res){
       if(properties.server.enableWelcomePage === true){
         console.log('entro');
-        res.render("reingreso.ejs",{});
+        res.render("reingreso.ejs",{public_key:properties.server.security.configModule.recaptcha.publicKey});
       }else{
         res.redirect("/");
       }
