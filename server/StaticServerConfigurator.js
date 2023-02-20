@@ -209,8 +209,14 @@ function StaticServerConfigurator() {
                   }
                   
                 } else {
-                  logger.error(error)
-                  res.redirect(`/public/solicitudes?error=${5002}}`);
+                  logger.error(error);
+                  var errorCode=0;
+                  if(error==='Los datos ingresados no coinciden con la información del alumno.'){
+                    errorCode=5002;
+                  }else if(error==='No se encontró la información del Alumno.'){
+                    errorCode=5003;
+                  }
+                  res.redirect(`/public/solicitudes?error=${errorCode}}`);
                 }
               })
       
