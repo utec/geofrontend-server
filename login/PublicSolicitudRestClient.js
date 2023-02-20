@@ -66,7 +66,7 @@ function PublicSolicitudRestClient(baseUrl,securitybaseUrl) {
                         if (err.response && err.response.data && err.response.status && err.response.data.message) {
                             logger.error("Error: " + err.response.data.status + ", message:" + err.response.data.message);
                         }
-                        return callback(err.response.data.message, null);
+                        return callback(err.response.data.message, err.response.data.message);
                     });
             }).catch(function (err) {
                 logger.error(err.stack);
