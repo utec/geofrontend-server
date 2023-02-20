@@ -210,8 +210,7 @@ function StaticServerConfigurator() {
                   
                 } else {
                   logger.error(error);
-                  logger.error(response);
-                  var errorCode=0;
+                  let errorCode=0;
                   if(response==='Los datos ingresados no coinciden con la información del alumno.'){
                     errorCode=5002;
                   }else if(response==='No se encontró la información del Alumno.'){
