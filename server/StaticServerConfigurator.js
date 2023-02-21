@@ -216,7 +216,7 @@ function StaticServerConfigurator() {
                   }else if(error==='No se encontró la información del Alumno.'){
                     errorCode=5003;
                   }
-                  res.redirect(`/public/solicitudes?error=${errorCode}}`);
+                  res.redirect(`/public/solicitudes?error=${errorCode}`);
                 }
               })
       
