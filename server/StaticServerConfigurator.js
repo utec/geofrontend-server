@@ -3,6 +3,8 @@ const PublicLoginRestClient = require('../login/PublicLoginRestClient.js');
 var httpContext = require('express-http-context');
 var path = require('path');
 const uuid = require('uuid');
+const axios = require('axios');
+var jp = require('jsonpath');
 
 function StaticServerConfigurator() {
 
