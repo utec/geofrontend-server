@@ -172,6 +172,84 @@ function StaticServerConfigurator() {
       }
     });
 
+    /*pasarela*/
+    app.post(properties.server.security.configModule.pasarelaFormEndpoint !== undefined ?
+      "/" + properties.server.security.configModule.pasarelaFormEndpoint : "/pasarela", function (req, res) {
+        if (properties.server.security.configModule.pasarelaActive !== undefined &&
+          properties.server.security.configModule.pasarelaActive) {
+
+          logger.info("#### pasarela ####")
+          var urlEndpoint = properties.frontend.paymentDebtApi.baseUrl + properties.frontend.paymentDebtApi.endpointKushkiPayment
+          logger.info("-- post to: " + urlEndpoint)
+          try {
+            axios({
+              method: 'POST',
+              headers: {
+                'content-type': 'application/json',
+                'Authorization': 'Bearer ' + req.session.connectedUserInformation.tokenV2
+              },
+              url: urlEndpoint,
+              data: req.body,
+            })
+              .then(function (response) {
+                logger.info(response.data.content)
+
+                if (!response || (typeof response === 'undefined')) {
+                  return callback("Endpoint " + urlEndpoint + " http response is wrong.", null);
+                }
+
+                if (!response.data || (typeof response.data === 'undefined')) {
+                  return callback("Endpoint " + urlEndpoint + " http response body is null, empty or wrong.", null);
+                }
+
+                var status = jp.query(response.data, '$.status');
+
+
+                if (status != "200" && status != "400") {
+                  var transactionStatus = response.data.content.details.transactionStatus
+                  var responseText = response.data.content.details.responseText
+                  return callback("Endpoint " + urlEndpoint + " json response contains [status] different to 200 and 400:" + JSON.stringify(response.data), null);
+                }
+
+                var transactionStatus = response.data.content.details.transactionStatus
+                var responseText = response.data.content.details.responseText
+                var transactionId = response.data.content.details.transactionId
+                var transactionReference = response.data.content.details.transactionReference !== undefined
+                  ? response.data.content.details.transactionReference : ""
+                var currency = response.data.content.details.amount.currency
+                var approvedTransactionAmount = response.data.content.details.approvedTransactionAmount !== undefined 
+                  ? response.data.content.details.approvedTransactionAmount : ""
+                var paymentBrand = response.data.content.details.paymentBrand !== undefined 
+                  ? response.data.content.details.paymentBrand : ""
+
+                res.redirect("/dashboard?" + "transactionStatus=" + transactionStatus +
+                  "&responseText=" + responseText +
+                  "&transactionId=" + transactionId +
+                  "&transactionReference=" + transactionReference +
+                  "&currency=" + currency +
+                  "&approvedTransactionAmount=" + approvedTransactionAmount +
+                  "&paymentBrand=" + paymentBrand +
+                  "&pasarelaDescription=" + req.body.pasarelaDescription)
+                //return callback(null, response.data.content);
+
+              })
+              .catch(function (err) {
+                logger.error(err.stack);
+                if (err.response && err.response.data && err.response.status && err.response.data.message) {
+                  logger.error("Error: " + err.response.data.status + ", message:" + err.response.data.message);
+                }
+                res.redirect("/dashboard?" + "transactionStatus=DECLINED&error=" + err.message)
+              });
+          } catch (globalErr) {
+            logger.error(globalErr.stack);
+            res.redirect("/dashboard?" + "transactionStatus=DECLINED&error=" + globalErr.message)
+          }
+        } else {
+          res.redirect("/")
+        }
+
+      })
+
     /* serve rest of web assets*/
     app.use('/', hasProtectedAccess, express.static(geoFrontServerBundlePath));
 
