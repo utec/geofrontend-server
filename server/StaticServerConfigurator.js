@@ -215,7 +215,7 @@ function StaticServerConfigurator() {
 
                 var transactionStatus = response.data.content.details.transactionStatus
                 var responseText = response.data.content.details.responseText
-                var transactionId = response.data.content.details.transactionId
+                var ticketNumber = response.data.content.ticketNumber
                 var transactionReference = response.data.content.details.transactionReference !== undefined
                   ? response.data.content.details.transactionReference : ""
                 var currency = response.data.content.details.amount.currency
@@ -226,7 +226,7 @@ function StaticServerConfigurator() {
 
                 res.redirect("/dashboard?" + "transactionStatus=" + transactionStatus +
                   "&responseText=" + responseText +
-                  "&transactionId=" + transactionId +
+                  "&ticketNumber=" + ticketNumber +
                   "&transactionReference=" + transactionReference +
                   "&currency=" + currency +
                   "&approvedTransactionAmount=" + approvedTransactionAmount +
