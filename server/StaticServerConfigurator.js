@@ -176,6 +176,14 @@ function StaticServerConfigurator() {
       res.sendFile("/img/google.svg", { root: geoFrontServerBundlePath })
     });
 
+    app.get('/sites/default/files/styles/large/public/field/image/logo.png', function(req, res) {
+      res.sendFile("/img/logo_sm.png", { root: geoFrontServerBundlePath })
+    });
+
+    app.get('/sites/default/files/styles/large/public/field/image/background.jpg', function(req, res) {
+      res.sendFile("/img/background_utec.jpg", { root: geoFrontServerBundlePath })
+    });
+
     /* serve rest of web assets*/
     app.use('/', hasProtectedAccess, express.static(geoFrontServerBundlePath));
 
