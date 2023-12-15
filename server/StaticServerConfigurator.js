@@ -172,6 +172,10 @@ function StaticServerConfigurator() {
       }
     });
 
+    app.get('/sites/default/files/google.svg', function(req, res) {
+      res.sendFile("/img/google.svg", { root: geoFrontServerBundlePath })
+    });
+
     /* serve rest of web assets*/
     app.use('/', hasProtectedAccess, express.static(geoFrontServerBundlePath));
 
